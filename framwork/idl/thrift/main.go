@@ -1,0 +1,5 @@
+package thrift
+
+func main() {
+
+}
