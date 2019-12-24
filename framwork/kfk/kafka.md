@@ -55,5 +55,11 @@ kafka broker 处理请求
 leader epoch
     相当于leader的版本号
     epoch 机制是在 重启截取操作之前 会拉取一次 leader的LEO 
-         
+
+存储:
+    日志: (提高网络传输)
+        1. 将多条log compress 为一条 log 中的value值，多条被压缩的日志有 relative offset
+            [refer mysql page slot] 
+        2. 变长字段
+            
         

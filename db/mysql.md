@@ -210,23 +210,48 @@ SERILIZE
     2. io 成本
     mysql 会设置 index_dive_limit 来决定 当索引使用in 的时候最大的 in的大小，如果超过最大的in 就会使用索引估算的方式进行：估算in大概会扫描多少行
     show index from table 中的有个字段是叫做 cardinality 基数(没有重复的数字) 用这个唯一性来和总的row 来计算 平均的数 
+    3. join 成本计算
+    innerjoin: 优化器可以通过选择最低成本交换驱动和被驱动的顺序
+    left/right join
+    
+    cost = 驱动表成本 + 驱动表扇出数 * 被驱动表成本 
 
 12. mysql 的统计数据
     1. 存储方式：
         + 持久化到硬盘
         + 内存方式
          
+13. innodb 数据存储的方式
+    行记录:
+        compact(压缩和协议): 
+            元数据(组成方式):
+                * column的所占用大小: 根据存入时候真实的数据和 column 类型计算出来
+                * null column: null 是一种特殊的类型
+                    是一个bool数组 倒序的记录当前row 对应的 null 情况
+                * 记录头信息: 
+                    + 是否被删除
+                    + 当前所在B+ tree的位置信息和类型
+                        数据类型
+                        最小值
+                    + next_row 指针
+            数据:
+                存放真实的数据
+                组成部分 row_id, trans_id, roll_back_id, col1, col2 ....
+        思考:
+            当发生更新的时候 元数据怎么发生改变, 如果varchar 长度发生变化
+        [refer vs Kafka 的存储实现方式]
+        redundant:
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    page 16k:
+        * Page_Header  
+            记录页面的初始化信息， page address slot num 
+        * File_Header
+            当前page check_sum [refer tcp check_sum] 
+            sequence num
+            last modify
+        * Page Directer
+            将user_recoder分为多个组，
+            组成: slot1, slot2, slot3
+            slot 的值每个组最大recorder的偏移量， 
+            user_recoder : n_owned 字段表示每个组的成员量
+         

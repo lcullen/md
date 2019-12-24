@@ -70,6 +70,33 @@
     TCP keep-alive
     APP keep-alive [refer](https://technologyconversations.com/2015/09/08/service-discovery-zookeeper-vs-etcd-vs-consul/)
     Golang [refer](https://draveness.me/golang/concurrency/golang-timer.html)
+
+8. 发送窗口和接受窗口：
+    消费者和生产者模型: 消费能力控制生产能力
+    
+9. 拥塞控制
+    解决的问题: 雪崩式拥塞
+    原因: 大量package 涌入网络中，处理速度慢，滞留在网络中
+
+10. 重传
+    1. 指数退避算法
+    2. 快速重传， 重复收到相同的ack的时候要通过 ack option 中找到当前ack 对应的已经收到的序列号 和未收到的序列号
+    3. 超时时间设置:
+        低通滤波器: 采样80% RTT + 最新的20% RTT = avg(RTT)
+11. win 
+    数据包中的win=?字段是发送端告诉接收端 我当前最大的接受窗口，当win=0 的时候就让对方停止发送数,对方会有零窗口试探包试探 
+        试探包使用当前最大 seq - 1  len = 0 的package 等待对方确认
+    有等待的地方就有攻击
+12. 滑动窗口(避免接收方的拥塞): 流量控制 是由接收方来告诉发送方 当前接收方的能力
+    拥塞窗口(避免网络上的拥塞): 当前发送方发送的能力，
+        慢启动: 一开始的拥塞窗口很小，然后每次经过一个RTT cwnd * 2,直到 超过阈值，超过后开始 cwnd = cwnd + 1/cwnd
+            发生超时重传的时候 cwnd 回到阈值水平
+        快重传: 和10.2是一致的
+
+13. 延迟确认:
+    ack:
+    mysql中的 组提交  
+
 3. 信息安全
     + DNS 劫持
         传统的DNS 解析过程 client -> local_hosp_map -> 运营商local_dns (不具备权威) -> 13台DNS server 进行递归解析直到找到自己负责的对应域名，如果找不到 最后由顶级root dns 负责指派 能处理这个dns 解析的server 

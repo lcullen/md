@@ -144,4 +144,7 @@ function isCircle($node) {
                 否则 说明 target 在右边 low = mid+1 
             2. mid对应值 大于 target，target在左侧，取mid左侧， 取 high = mid-1
             
- 
+15. 图的存储
+    1. 邻接矩阵: p[i][j] = k 表示定点 i -> j 的路径是否可达，可达的代价是多少
+    2. 邻接链表  p[i] = linkedlist i 顶点连接着其他可达顶点 与 BFS 广度优先算法
+        当linkedlist 结构很长的时候 就可以使用其他的复杂方式 二叉平衡树
