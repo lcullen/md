@@ -1,3 +1,4 @@
+[最强refer](https://blog.csdn.net/u013256816/article/details/71091774) zhixiaosi
 1. kfk 与 zk 的关系
     kfk 自带 zk
     zk 保留 kfk 元数据 && 消费信息
@@ -57,9 +58,45 @@ leader epoch
     epoch 机制是在 重启截取操作之前 会拉取一次 leader的LEO 
 
 存储:
-    日志: (提高网络传输)
+    日志: (提高网络传输) [refer redis aof]
         1. 将多条log compress 为一条 log 中的value值，多条被压缩的日志有 relative offset
             [refer mysql page slot] 
         2. 变长字段
-            
-        
+    日志索引:
+        1. 索引偏移量
+            xxx.index:    offset1  => length  offset2=> length
+            每一个length 区间都有大量的 record 然后根据差值再去具体找 offset
+        2. 时间索引
+            类似
+    日志清理(多维度):
+        1. 基于时间删除:
+            借助timestamp.index 找到最大的 lastmodify,标记文件为.delete 文件 
+            [refer redis 渐进式rehash]
+        2. 基于offset 和基于时间是同一个方式
+        3. 日志压缩
+            对同一个key的log 进行压实操作，取最新的 一个key当做有效
+            操作如下:
+                1. 第一次扫描: SkimpyOffsetMap 来保存当前key的最大 offset
+                2. 第二次扫描: 对比日志中 相同的key 的offset 是否大于当前 map 的offset        
+
+kafka 不会发生lock 问题，因为每一个consumer 都是单独订阅和消费producer
+
+kafka 的压缩:
+    可配置压缩 
+    1. 客户端压缩
+        发送时的批量压缩
+    2. 服务端压缩
+kafka的稀疏索引
+    1. timestamp 索引
+    2. offset 索引
+    
+日志清理:
+   删除:
+   1. 根据时间戳: 标记清除，标记当前的日志文件为.delete 后缀， 交给后台delete线程进行异步删除
+   2. 基于总的日志大小
+   2. 根据offset: 标记需要清理的 最小offset， 小于这个值的所有offset segment 都要被标记为deletable segment
+   压缩: 可以对比redis的 aof 或者 RDB
+   1. 相同的key LWW: last write win, 日志序列不再联系
+   
+kafka的fsync 机制 和 mysql的进行类比:
+    

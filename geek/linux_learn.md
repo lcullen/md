@@ -13,7 +13,11 @@
         中断 可以通过取外卖的例子来表示 网络的中断
             硬中断: 系统响应硬件  
             
-            软中断: 程序的定时器、RCU锁
+            软中断: 程序的定时器、RCU锁 网络io
+                查看系统的软中断:  watch -d "/bin/cat /proc/softirqs"
+                小包问题:
+                    发送较小的数据却要使用很大的数据头，会造成 [refer](https://community.emc.com/community/support/chinese/teamblog/blog/2016/04/19/%E5%A4%A7%E5%92%96%E8%AE%B2%E7%BD%91%E7%BB%9C-%E4%B9%8B-%E6%9C%80%E7%BB%8F%E5%85%B8%E7%9A%84%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98)
+                    
                 
             
     

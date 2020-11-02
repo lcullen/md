@@ -142,7 +142,9 @@ DP
 
 5 不同的子序列（leetcode hard）动态规划
 https://www.jianshu.com/p/c0935f9d5b5d 
-https://zhuanlan.zhihu.com/p/28934358
+https://zhuanlan.zhihu.com/p/28934358 
+当s 增加一位的时候到第i位的时候，不管此时的s的i位字符和 t的j位字符 是否相等， f(i,j) = f(i-1, j)
+但是 如果 i-1 == j 的时候， j 又可以前进一位 和i 进行比较 
 ```gotemplate
     func numDistinct(s, t string) int {
         common := make(map[int][]int)

@@ -100,6 +100,8 @@ go 中的sort
 1. panic 是一个linked 结构体，当panic 发生的时候 会循坏调用当前 goroutine defer，如果defer 中有关键字 recover
     goroutine 就能 拯救 否则 defer 调用完之后 直接 crash goroutine
 2. defer 结构体也是一个通过linked的 结构，内置了 defer 需要调用的func
+   defer 不是原子的 [refer](https://segmentfault.com/a/1190000006823652)
+        先对return xxx 进行 xxx 的赋值 然后 再执行 defer 语句， 然后再真正的返回
 
 =====go concurrency == 
 1. 并发的副作用
@@ -109,3 +111,17 @@ go 中的sort
 
 ======golang 中的 ticker 实现原理
 1. 
+
+=====go GMP 调度 [refer](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/)
+
+
+2. 无锁队列的实现 
+   * sync.Waitgroup 的实现方式
+   * Blpop 的实现方式
+    
+    
+    
+    
+    
+    
+    

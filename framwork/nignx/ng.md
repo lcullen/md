@@ -152,7 +152,14 @@ find config module
     + 共享内存解决通信问题
 
 5. 向master 进程发送信号
-
+    master 是 操控所有的 worker的父进程
+        reload
+            1. master check config validate
+            2. master listen new fd
+            3. master fork new child p
+            4. master quit old child p
+            5. old child timeout quite
+    nginx 
 ====
 1. ng使用场景
     1. 静态资源服务器

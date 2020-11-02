@@ -1,8 +1,11 @@
+sds 的字符串预分配
+    free->len -> buf 有一个表头
+
 1. string
     + raw
     + embstr
     
-2. list
+2. list 发布订阅的 功能也用了 链表
     + quicklist
     + ziplist 压缩列表 连续的内存分配
         
@@ -19,6 +22,9 @@
     dict 满足set的查找特性
     skiplist 满足排序特性 + 更具范围获取值 (红黑树做不到这一点)
     skiplist 在插入node的步骤 [refer](https://www.jianshu.com/p/58bab10b7ab9)
+
+    intset
+        如何解释 intset 
     
 应用
 1. 分布式锁

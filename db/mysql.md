@@ -19,9 +19,8 @@ binlog(物理层)追加写磁盘
     undo log(逻辑层)
     uncommit:回滚段中的都是反向操作sql
     committed: 删除回滚段sql
-两阶段提交
-
-保持binlog redolog 一致性
+两阶段提交: 我要保证通过binlog 来恢复数据是 可靠的 【binlog 是可靠的 不多不少的!】
+    保持binlog redolog 一致性
 INDEX
     FORCE_INDEX
     选错索引

@@ -1,5 +1,11 @@
 1. 通过视屏id 等用户点击的时候再进行下载
 
+#== 传统聊天系统的 基础能力
+    接入层:
+        协议先行
+        保持连接
+        session控制
+        消息推送
 2. logic_ack vs http_ack
     业务层:
         im_server send msg 的时候把没有ack的消息放入 unconfirm cron queue 中 如果收到client ack 则从queue中删除

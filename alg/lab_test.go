@@ -152,4 +152,45 @@ func isMatch(s, p string) bool {
 
 //单词拆分 II [refer](https://blog.csdn.net/qq_17550379/article/details/85847803)
 func Solution(s string, list []string) []string {
+	return []string{}
+}
+
+func mergeSort(arr []int, lo, hi int) []int {
+	if len(arr) <= 1 {
+		return arr
+	}
+	mid := (hi-lo)/2 + lo
+	left := mergeSort(arr, lo, mid)
+	right := mergeSort(arr, mid+1, hi)
+	return append(left, right...)
+}
+
+func quickSort(arr []int, k, lo, hi int) int {
+	if hi-lo == 0 || hi-lo == 1 && arr[lo] != k {
+		return -1
+	}
+	pivot := arr[lo]
+	lo_t := lo + 1
+	hi_t := hi
+	for hi_t > lo_t {
+		for arr[hi_t] > pivot && hi_t > lo_t {
+			hi_t--
+		}
+
+		for arr[lo_t] < pivot && lo_t < hi_t {
+			lo_t++
+		}
+		arr[lo_t], arr[hi_t] = arr[hi_t], arr[lo_t]
+	}
+	arr[lo], arr[hi_t] = arr[hi_t], arr[lo]
+	if k == lo_t {
+		return k
+	} else if lo_t > k {
+		return quickSort(arr, k, lo, lo_t)
+	}
+	return quickSort(arr, k, lo_t+1, hi)
+}
+
+func partition() {
+
 }

@@ -148,3 +148,73 @@ function isCircle($node) {
     1. 邻接矩阵: p[i][j] = k 表示定点 i -> j 的路径是否可达，可达的代价是多少
     2. 邻接链表  p[i] = linkedlist i 顶点连接着其他可达顶点 与 BFS 广度优先算法
         当linkedlist 结构很长的时候 就可以使用其他的复杂方式 二叉平衡树
+
+16. 复杂度分
+    1. 代码执行行数 && 最长运行次数的代码
+    2. 最坏,最好，平均复杂度
+        未知的数据集中寻找的代价
+       平均复杂度:
+        均摊每种可能
+    3. 结合代码结构的方式 && 数据的分布
+        预测
+
+17. 队列 && 并发队列 && freelock queue 
+    一切脱离场景的 都是无稽之谈
+    
+
+18. BFS && DFS
+    模板:
+```python
+    def bfs(node, visited): 
+        if not node: 
+            return 
+        queue = []
+        visited.add(node)
+        queue.push(node) 
+        while !queue.is_empty():
+            next_node = queue.pop()
+            visited.add(next_node)
+            queue.push(next_node.childern())
+```
+
+```python
+    def dfs(node, visited):
+       if not node:
+            return 
+       visited.add(node)
+       for childern in node.get_childern():
+            if !visited.is_visit():
+                visited.add(childern)
+                dfs(childern, visited)
+       
+```
+实战:
+    按层遍历:
+        bfs:
+        
+        ```python
+            def print_by_level(node, level):
+                    
+        ```
+
+```go
+    func printByLevel(q){
+    	sz := len(q)
+    	for i:= 0 ; i< sz i ++ {
+    	  print(q.Pop())
+    	  is q.left != nil {
+    	  	q.Push(q.left)
+    	  }
+    	  is q.right != nil {
+    	  	q.Push(q.right)
+    	  }
+    	}
+    	print("\n")
+    	printByLevel(q)
+    }
+```
+
+1. 如何理解最长公共子串的长度，将最好的结果传递 并 挤兑到最后一个 M*N 
+2. 代码的编译依赖关系:
+    邻接矩阵: 全局扫描被依赖的关系， a -> b / c 例如a 是所有bc的前驱 那么a的 依赖度是2 先解决依赖度为 0 的 
+3. 拓扑排序

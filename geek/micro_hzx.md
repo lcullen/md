@@ -27,7 +27,7 @@ get conn process:
                 
         + backoffStrategy 重试机制:
         + health check:
-2. 责任链模式: invoke() 
+2. 责任链模式: invoke()
     概念:
     1. UnaryClientInterceptor 
         ```go

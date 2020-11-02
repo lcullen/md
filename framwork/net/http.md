@@ -1,3 +1,7 @@
+相关问题:
+    TCP提供了一种字节流服务，而收发双方都不保持记录的边界，应用程序应该如何提供他们自己的记录标识呢？ 业务系统如何知道 消息已经结束
+
+
 1. ICMP
     查询报文类型:
     差错报文类型:
@@ -43,11 +47,15 @@
         1. TCP 连接中主动断开一方 会有这个状态
         2. 持续时间是 2 * MSL (max segement lifetime) 
             1*MSL: 等待最近一个被动断开放的数据包过期
-            1*MSL: 等待主动断开方 确认(ack) 被动断开放的 fin. ack 的过期 
+            1*MSL: 等待主动断开方 确认(ack) 被动断开的 fin. ack 的过期 
             总共是2次等待
         3. 太多会引发的问题：
-            端口被沾满 
-        
+            端口被沾满
+            address already in bind 
+                time_wait 阶段的seq 始终要小于最新的 msg 的seq
+                    so as timestamp
+            [refer1]关于tcp_tw_reuse和SO_REUSEADDR的区别，可以概括为：tcp_tw_reuse是为了缩短time_wait的时间，避免出现大量的time_wait链接而占用系统资源，解决的是accept后的问题；SO_REUSEADDR是为了解决time_wait状态带来的端口占用问题，以及支持同一个port对应多个ip，解决的是bind时的问题。
+            [refer2 惊群]SO_REUSEPORT用在多个不同的socket监听在同一个端口上，这种情况比较罕见，容易出现所谓的"惊群"现象。当然，如果用的好，也可以解决一些特定场景的问题。
 5. 本地套接字:
     基本上很tcp 和udp 套接字类似，但是服务端是通过有权限的对 获取绝对路径的文件 进行监听 实现的
     
@@ -93,10 +101,26 @@
             发生超时重传的时候 cwnd 回到阈值水平
         快重传: 和10.2是一致的
 
-13. 延迟确认:
-    ack:
-    mysql中的 组提交  
+13. 延迟确认(磨叽姐):
+    要解决的问题: 减少不必要的ack 回复
+    当client 发送多次seq 并且 server 要对每一次seq 进行ack，多次seq到达server 组合成完整的msg时候， server 要 response ，这个时候又要response ack, 可以把前面的seq ack 合并为 response ack， 当然有timeout
 
+14. hold住哥 [refer mysql中的 组提交 kafka client fire and forget]
+    nagle 算法: 要解决的问题是 减少小包在网络中的传输
+    优势: 实现简单 劣势: 应用层无感知被hold住了，如果这个时候os down，或者本来就是想发送一个小包 又被hold了(对时延比较敏感的应用 不适合)
+    具体的实现方式或者说是send条件
+    1. 当前的 发送队列中不存在 等待ack 的seq，
+    2. 当前的 等待发送队列的大小 达到了 mss max sequence size
+    3. 最多能hold多久
+    
+当 13 meet 14 时延会非常的高    
+
+15. before UDP send package 
+        try to connect server for testing arriveable icmp
+
+16. TCP的可靠性
+    只是针对TCP层的可靠， 并不负责应用层的可靠性
+    reset by peer && broken pipe  一个是tcp 错， 一个是管道错, 一个rst 一个是signal
 3. 信息安全
     + DNS 劫持
         传统的DNS 解析过程 client -> local_hosp_map -> 运营商local_dns (不具备权威) -> 13台DNS server 进行递归解析直到找到自己负责的对应域名，如果找不到 最后由顶级root dns 负责指派 能处理这个dns 解析的server 
@@ -110,3 +134,27 @@
     
     + 存储
         进行端到端的加密，端利用对方的 公钥对消息进行加密，接收放通过自己的私钥进行解密，中间的存储层存储的也是加密之后的信息
+
+//-=-=--=-
+1. select: 程序疯狂 span 用select 扫描所有的 fd，等fd 满足条件后，处理并且 fd_set fd，等待应用程序span 被处理的 fd
+    event
+   poll: 对fd 的数量有限制，普遍是1024
+   
+   以上本质上是监听所有的句柄
+
+2. select/poll -> epoll 过渡的原因: fd的限制
+      epoll 为什么 fd 的增长 对其效率没有影响？ 
+        epoll_wait 在不同 triggered 返回值:
+            level triggered 条件触发: 每次wait 都会 通知 没有处理的 event
+        edge triggered 边缘触发
+      
+      拆解epoll:
+            epoll 中有一个 红黑树,每个节点是 epitem,
+        如果当当前的需要被监听的fd 通过epoll_ctl 加入到 epoll 的 红黑树中
+        成为一个epitem节点,并会产生一个 epoll_entry，
+        通过这个epoll_entry 能够找到对应的 epoll fd的实例和该实例对应的 epitem.
+        
+
+3. 网络中发包 IP头的变更Mac地址的变更条件:
+    A -> B 不同的ip网段不同IP 每次改变目标MAC 地址 而不改变IP 地址。
+    A -> B 不同的ip网段相同IP 改变MAC IP

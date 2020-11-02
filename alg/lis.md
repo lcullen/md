@@ -42,3 +42,78 @@ func LISN2(s []int) int {
     ```gotemplate
        
     ```
+
+1. 反转链表 三变量 第一个变量不动,在最后返回之前添加到头结点
+    ### 解题思路
+    双指针问题
+    在原始head之前预定义缺省null节点 pre := nil, 当前节点cur := head 每次改变cur 指针的next 指向pre，改变完之后移动pre、cur 指针，
+    并且每次先赋值pre 再赋值cur 防止链表断裂
+    
+    ### 代码
+    
+    ```golang
+    /**
+     * Definition for singly-linked list.
+     * type ListNode struct {
+     *     Val int
+     *     Next *ListNode
+     * }
+     */
+    func reverseList(head *ListNode) *ListNode {
+        if head = nil {
+            return head
+        }
+        p1 := head
+        p2 := head.Next
+        for p2 != nil {
+            p3 = p2.Next
+            p2.Next = p1
+            p1 = p2
+            p2 = p3
+        }
+        return p2
+    }
+    ```
+2. 反转链表II (反转第m ~ n)
+    ### 解题思路
+    双指针问题
+    在原始head之前预定义缺省null节点 pre := nil, 当前节点cur := head 每次改变cur 指针的next 指向pre，改变完之后移动pre、cur 指针，
+    并且每次先赋值pre 再赋值cur 防止链表断裂
+    
+    ### 代码
+    
+    ```golang
+    /**
+     * Definition for singly-linked list.
+     * type ListNode struct {
+     *     Val int
+     *     Next *ListNode
+     * }
+     */
+    func reverseList(head *ListNode, m, n int) *ListNode {
+        if head == nil {
+            return head
+        }
+        pos, dummy := 1, head
+        for pos < m  {
+            head = head.Next 
+            pos ++
+        }
+        p1 := head.Next
+        for p1.Next != nil && pos < n{
+            p2 := p1.Next
+            head.Next = p2
+            p1.Next = p2.Next
+            p2.Next = p1
+            
+            head = p1
+            p1 = p2
+            pos ++ 
+        }
+        return  dummy
+    }
+    ```
+
+
+
+
