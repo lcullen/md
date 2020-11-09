@@ -3,7 +3,7 @@
     kfk 自带 zk
     zk 保留 kfk 元数据 && 消费信息
     
-2. kafka produce config:
+2. kafka produce config: 
     produce config
     acks = 0 fire-and-forget
     acks = 1 leader confirm
@@ -13,6 +13,7 @@
     使用 avro + Confluent Schema Registry 的方式实现kafka schema 的定义
     
 4. consumer
+    consumer 集群之间互相不影响各自的消费
     group consumer 如何分配分区:
         第一个joinGroup的consumer会成为群主，拥有一份组员的所有信息，当一个consumer
         调用joinGroup操作的时候，群主会将新的分配信息交给协调器。
@@ -20,16 +21,22 @@
         群主的分配策略
         
     再均衡的概念:
+        分布式中的心跳 vs kafka 心跳
+            kafka
+            1. broker 充当consumer cluster 的 coordinator; 其他的broker watch zookeeper/ctrl -> broker_id 的失效 
+                ctrl/broker_id 失效的时候 会不会触发惊群效应 ? 如何解决 ? [todo]()
+            2. 
         如果一个consumer 不在向 broker 发送心跳信息，协调器会发生重均衡
     
     线程安全: 
+        不同的集群互不影响; 每一个partition 都只有一个集群的 唯一一个消费者 可以消费, 不同集群之间的消费者互相不影响
     
     
 5: 如何解决实时性的要求:
     kafka stream read-process-write
     
 
-6: kafka 首领副本和追随副本
+6: kafka 首领副本和追随副本(强leader 分布式: 所有的读写都经过leader 分区)
     首领副本：处理客户端的读写请求
     追随副本：同步首领数据，如果收到读写请求就返回报错信息 (kafka客户端自己负责把请求正确的发往首领副本)
     追随副本进入ISR队列的要求:
@@ -47,15 +54,31 @@
         2. auto.offset.reset 如果是新的topic 没有设置offset 那么可以选择从latest or earliest 进行消费
         3. enable.auto.commit 
         4. auto.commit.interval.ms 自动提交的时间间隔(频率)
-kafka broker 处理请求
+        
+kafka broker 处理请求 [refer reactor 网络模式] acceptor -> proccesser 
+    1. 客户端的请求
+        a. 写入请求
+        b. 获取请求
+            数据一致性的问题， 是否低于高水位 offset
+    2. 分区副本的请求
+        a. 复制类型的请求
+    3. 控制器发送给分区首领的请求
+    [客户端的负载均衡] kafka 客户端必须自己维护对 leader 分区 的元数据信息: 否则发送到非leader 分区时 会接受到错误的响应
+        每个broker 都拥有全局的 broker cluster 元数据信息:
+             
+        
 #
     HW: high water 首领副本更新HW的时机准则是 远程副本或本地首领副本更新完LEO的时候 HW = min(所有有副本的LEO)
     LEO: log end offset, 远程副本是 拉取 首领副本的日志同步的时候 更新LEO，首领是收到producer的消息的时候更新本地LEO
     间与HW与LEO之间的是未提交的日志
     每个broker重启之后都会执行截取操作，只截取到HW的日志，所有未提交的日志都会失去
-leader epoch
-    相当于leader的版本号
-    epoch 机制是在 重启截取操作之前 会拉取一次 leader的LEO 
+leader 
+    epoch
+        相当于leader的版本号
+        epoch 机制是在 重启截取操作之前 会拉取一次 leader的LEO 
+    election 选举:
+        1. 通常会研究out of sync replica 里面获取一个副本分区当做首领
+            a.  
 
 存储:
     日志: (提高网络传输) [refer redis aof]
@@ -99,4 +122,14 @@ kafka的稀疏索引
    1. 相同的key LWW: last write win, 日志序列不再联系
    
 kafka的fsync 机制 和 mysql的进行类比:
-    
+    mysql的落盘机制
+        1. redo log 的三个落盘过程
+            redo_log_buffer -(group_commit)> page_cache -(fsync)> disk
+        2. bin log 的落盘过程
+            bin_cache -(fsync)> disk
+        结合redo bin log 的两阶段提交
+            -(perpare)>redo_log_buffer  -> bin_cache -> redo_log fsync -> bin_log fsync -> (可以忽略)redo_log commit
+        3. mysql 的双1 设置 (如何保证数据的一致性 完整性)   
+
+协议:
+    1. 其中一项correlation_id, 用于关联请求上下文 对response 进行关联 
