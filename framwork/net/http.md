@@ -30,7 +30,7 @@
                 + bind fd with addr info
                 + 服务端listen(fd, backlog) 
             listen
-                + backlog 解读: 操作系统在listen的时候会根据 __backlog__ 去初始化两个队列 [拓展阅读:阿里中间件团队博客：关于TCP 半连接队列和全连接队列](http://jm.taobao.org/2017/05/25/525-1/)
+                + backlog 解读: 操作系统在listen的时候会根据 __backlog__ 去初始化两个队列 [拓展阅读:阿里中间件团队博客：关于TCP 半连接队列和全连接队列](http://jm.taobao.org/2017/05/25/525-1/) [gorefer](https://blog.csdn.net/yangguosb/article/details/90644683)
                     + sync queue
                     + ack queue
                     >> 一个小插曲: 
@@ -158,3 +158,10 @@
 3. 网络中发包 IP头的变更Mac地址的变更条件:
     A -> B 不同的ip网段不同IP 每次改变目标MAC 地址 而不改变IP 地址。
     A -> B 不同的ip网段相同IP 改变MAC IP
+
+//-----
+GRPC server 侧源码解读
+比较难理解的一点:
+    把单次请求的request 封装成为 setting frame, header frame 、data frame 
+    在header frame 用对应的serv 处理请求， 等待data framer的到来，data frame是 blocked的进入recvbuffer 中，recvbuffer 再阻塞的get
+    

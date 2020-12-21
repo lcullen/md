@@ -133,3 +133,25 @@ kafka的fsync 机制 和 mysql的进行类比:
 
 协议:
     1. 其中一项correlation_id, 用于关联请求上下文 对response 进行关联 
+
+延迟设计:
+    1. 使用netty 的时间环做延迟计时策略
+    2. 延迟任务可以被外部时间提前触发，也就是可以被取消
+    3. 如何去各自满足 消费者 && follower 拉取offset的 延迟请求
+        1. follower: leader 副本追加了本地日志(涉及事务，一定是未提交的事务)
+        2. consumer: 更新lso 作为consumer 的拉取外部事件
+
+broker 担当 Controller 强leader 方式 控制所有的集群事件
+    1. first create zookeeper node as leader,others watch node change
+    2. 监听所有的zookeeper 文件节点变更事件:
+        1. isr
+        2. topic
+        3. partition
+
+consumer(client.id) 端自定义 分区分配的策略 
+    1. single : first custom, second as config
+    2. multiple:  group_coordinator,consume_coordinator
+        group coordinator 是由对应的 leader 副本所在 
+        
+TTL:
+    

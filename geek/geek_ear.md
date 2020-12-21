@@ -24,6 +24,8 @@
 5. promise 设计模式
     future 对象
     1. kafka producer 利用future 模式实现同步发送机制
+    [raft之promise 模式设计](https://github.com/hashicorp/raft) 
+    1. logFuture 是wait until log to commit
 
 
 11. gateway 与 facade 相似
