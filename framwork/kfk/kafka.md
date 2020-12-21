@@ -32,10 +32,17 @@ II. 高可用是如何保证的 __CAP__ 中间件的选型方式:基本可用&&�
         * kafka的副本同步问题和关键点: 
             a. 日志的同步方式(推和拉?) 有推有拉: [日志写入过程和延迟设计](http://www.justdojava.com/2019/12/11/kafka-replication-request/);
             b. HW && ISR(变更条件和时机):  leader 需要收到当前isr 中所有的副本成功提交之后 才返回客户端成功写入的response
-        * leader 切换数据丢失的问题 
+        * leader 切换数据丢失的问题: 
     2. 无主(一定有一个coordinator):
     3. 多主():
     
+ III. 数据可靠性
+    1. 数据丢失的问题:
+        a. leader 切换导致的数据丢失问题:
+            node 重启 会根据当前所在的的副本截断高于水位的日志，此时从leader fetch msg 的时候 leader 也发生了故障，导致当前完成重启的节点当做了新的leader，产生数据丢失
+            
+    
+       
 1. kfk 与 zk 的关系
     kfk 自带 zk
     zk 保留 kfk 元数据 && 消费信息
