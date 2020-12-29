@@ -78,6 +78,7 @@
     TCP keep-alive
     APP keep-alive [refer](https://technologyconversations.com/2015/09/08/service-discovery-zookeeper-vs-etcd-vs-consul/)
     Golang [refer](https://draveness.me/golang/concurrency/golang-timer.html)
+    Http Connection: keep-alive 中的意思， 就是 服务端永远不关闭此链接 由客户端关闭
 
 8. 发送窗口和接受窗口：
     消费者和生产者模型: 消费能力控制生产能力
@@ -150,9 +151,13 @@
       
       拆解epoll:
             epoll 中有一个 红黑树,每个节点是 epitem,
-        如果当当前的需要被监听的fd 通过epoll_ctl 加入到 epoll 的 红黑树中
-        成为一个epitem节点,并会产生一个 epoll_entry，
-        通过这个epoll_entry 能够找到对应的 epoll fd的实例和该实例对应的 epitem.
+        + 如果当当前的需要被监听的fd 通过epoll_ctl 加入到 epoll 的 红黑树中
+        + 成为一个epitem节点,并会产生一个 epoll_entry，
+        + 通过这个epoll_entry 能够找到对应的 epoll fd的实例和该实例对应的 epitem.
+        + 将每个fd 都加入到rbtree 并注册自己的ep_call_back 处理func
+        + 当内核满足当前fd的时候会反向调用 已经注册的ep_call_back , 并找到当前的epoll 实例句柄
+        + epoll 实例 filter 对应的时间 如果是用户关注的时间则加到 就绪队列中等待用户 获取
+          如果是level trigger 的话 会重新反复的放到就绪队列中 等待用户的获取
         
 
 3. 网络中发包 IP头的变更Mac地址的变更条件:

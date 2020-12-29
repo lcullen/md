@@ -2,47 +2,6 @@
 **背景[cap是怎么做到的]**
 >> for interview
 
-I. 如何做到高吞吐
-    1. broker:(存储的方式 && I/O):
-        I/O 对应的调度算法:
-            a.FIFO / CF
-        a. 顺序写入: 替代随机写入，减少了寻址的时间 __磁盘顺序写的性能会颠覆三观,甚至比内存的随机写入性能都要高__ [LSM&&SSTable](https://juejin.cn/post/6844903863758094343) __每次大规模的搜索会使用bloomfilter处理__ 包括LSM 查找是否存在的key, []
-            选址方式(kafak索引的组织方式): 每一个文件夹下都会有三种文件格式的数据 *.log *.timestamp *.index
-                * offset: 每一个*.index 文件都是以 relative offset 作为文件名 进行二分搜索找到对应的*.index file 锁定到真正的物理offset
-                * timestamp: 和二级索引类似 timestamp => offset， offset=> address
-        b. 页缓存:
-            一次性fsync 到磁盘， 组提交方式 [refer](http://www.yangchengec.cn/setup/498.html)
-        c. 零拷贝 : 一般模式下read(socket) write(socket) 都是用户态行为 整个过程都需要 内核和用户态的参与，所有进行了4次拷贝
-    2. 客户端
-        producer: 
-            a. 压缩算法:
-            b. 发送策略: 
-        consumer:
-            a. 保存对于broker fetch request 的元数据保存
-        
-
-II. 高可用是如何保证的 __CAP__ 中间件的选型方式:基本可用&&最终一致性 : 
-        基本可用:__级别调整:any,one,quorum__: 削峰、过载保护、服务降级
-    副本机制[分布式事务的解决方案:还会涉及到乐观锁和悲观锁的选型问题]: 每一个topic_partition 能够有多个replication 对应 
-    副本机制中的 角色选择套件 kafka 选择的是 强leader(partition侧视角) 和多主(topic侧视角)的混合 
-        同步侧的推拉分析 
-    1. 强leader(一主多从) : 
-        * raft : 
-            a. 两阶段提交 优化为 一个阶段的提交: app <-> (ask/answer) leader <-> half answer (ask/answer) follower; 然后将每次的commit 信息append 在heart beat or msg 中 
-        * kafka的副本同步问题和关键点: 
-            a. 日志的同步方式(推和拉?) 有推有拉: [日志写入过程和延迟设计](http://www.justdojava.com/2019/12/11/kafka-replication-request/);
-            b. HW && ISR(变更条件和时机):  leader 需要收到当前isr 中所有的副本成功提交之后 才返回客户端成功写入的response
-        * leader 切换数据丢失的问题: 
-    2. 无主(一定有一个coordinator):
-    3. 多主():
-    
- III. 数据可靠性
-    1. 数据丢失的问题:
-        a. leader 切换导致的数据丢失问题:
-            node 重启 会根据当前所在的的副本截断高于水位的日志，此时从leader fetch msg 的时候 leader 也发生了故障，导致当前完成重启的节点当做了新的leader，产生数据丢失
-            
-    
-       
 1. kfk 与 zk 的关系
     kfk 自带 zk
     zk 保留 kfk 元数据 && 消费信息
