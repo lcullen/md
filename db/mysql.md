@@ -253,4 +253,6 @@ SERILIZE
             组成: slot1, slot2, slot3
             slot 的值每个组最大recorder的偏移量， 
             user_recoder : n_owned 字段表示每个组的成员量
-         
+
+MyISAM:
+    如何理解MyISAM的索引组织形式       

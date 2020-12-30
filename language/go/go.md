@@ -109,19 +109,29 @@ go 中的sort
     1. mutex
     
 
-======golang 中的 ticker 实现原理
-1. 
 
-=====go GMP 调度 [refer](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/)
-
+I. go GMP 调度 [refer](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/)
+goroutine 是较线程 更加轻量级(占用的上下文空间更加的小切换更加的容易)的用户态 协程, 添加goroutine 提高了程序的并发能力
+但是应用程序要进行对goroutine的调度和协调, 避免出现饿的饿死, 旱的旱死. [tony bai](https://tonybai.com/2020/03/21/illustrated-tales-of-go-runtime-scheduler/)
+G = goroutine
+P = goroutine的运行空间
+M = 真实的程序线程数
+    * 会遇到的问题: 饥饿
+    * M 、G 的阻塞: M的系统阻塞 G的chan 阻塞
+    * 公平性:  每个超过运行10ms 都会被标记为可抢占的 sysymon 后台协程可以直接强制使超过20ms的G被移除 (goroutine中自带了runtimetimer计时器 time.sleep 用的就是这个)
+    
+II go channel 底层实现 or 数据结构 [refer](https://codeburst.io/diving-deep-into-the-golang-channels-549fd4ed21a8)
+    channel 为的是解决 并发过程中 竞态资源的问题, 用communication 来代替share data
+    核心结构
+    1. sendq 和 rcvq
 
 2. 无锁队列的实现 
    * sync.Waitgroup 的实现方式
    * Blpop 的实现方式
     
-    
-    
-    
-    
-    
-    
+3. timer 的实现细节: [refer](https://www.cyhone.com/articles/analysis-of-golang-timer/)
+    runtime中全局维护 64bucket, 每个bucket 都是一个四岔最小堆, 堆顶是距离现在最近的时间
+
+
+II. go pprof 
+    1. 

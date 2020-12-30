@@ -213,3 +213,36 @@ QUEUED
 127.0.0.1:6379> get locked
 "3"
 上面的语句 incr 会执行成功，但是lpop 是失败的
+
+
+redis:
+多往往内部实现 && 背景 && 容错 && 高可用设计的方式去思考 为什么要这么设计
+分为几种架构模式:
+    一主多从
+        1. 高可用的保证 拓扑架构图的设计
+            replication 
+        2. 数据一致性的实现 (不能保证强一致性):
+            * 不同于mysqldb redis只是为了做cache 而不是为了实现数据的一致性
+            * 有较弱的一致性 rdb 快照 && aof 命令式的可追加
+    cluster:
+        * 分布式锁 面临的问题 和解决方案: [refer](https://dbaplus.cn/news-159-3080-1.html)
+            + 原子操作 
+            + TTL 和 expireTime
+                如果发生了GC 问题 或者其他网络延迟的问题， client 在set lock的时间都要大于 expiretime 导致 client 无法知道到底有没有锁成功
+                解决方案是 加入定时器的机制 如果client 在expire的时间内无法返回报错 由客户自己处理，还有一种解决方案是 token， 从redis 那版本号， 低于这个版本号的就无法set， basic 算法吧这个是
+        * 数据分片怎么做的:
+    sentinel:
+        拓扑结构 和一主多从的区别
+
+缓存更新、穿透、雪崩:
+    cache aside
+    page cache fync to disk
+    夹带bloom_filter 进行过滤
+             
+     
+为什么那么快，并发又可以那么的高:
+    1. redis 
+        redis 是基于事件模型驱动的程序, 事件分为
+        文件事件: 文件时间基于reactor模型和 epoll I/O 多路复用, 分别监听socket的accept && readable && writable 当事件得到满足就交由对应的处理器
+        时间事件: 周期性任务,aof,rdb, 
+  

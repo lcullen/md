@@ -17,6 +17,10 @@
     + 第一次握手: client.connect() 客户端阻塞等待返回
     + 第二次握手: server.accept() server 接受请求，在内核中创建一个连接fd 等到连接close() 的时候close() fd
     + 第三次握手: client.sendmsg() 这个时候 server 要writemsg
+    为什么要三次握手: (基本至少要握手三次的原因: 各自确认自己的收发能力是ok的)
+    client view 的前两次的握手可以保证自己和服务端的收发能力是ok， server view 在前两次只能确保自己的接受能力是ok的，第三次握手能够让服务端确认自己的发送能力是ok的 
+    为什么要四次挥手: ()
+    
 4. writemsg / sendmsg [面向socket编程](https://time.geekbang.org/column/article/116043) [golang 实现](https://tonybai.com/2015/11/17/tcp-programming-in-golang/)
     + send
     + write
@@ -80,8 +84,9 @@
     Golang [refer](https://draveness.me/golang/concurrency/golang-timer.html)
     Http Connection: keep-alive 中的意思， 就是 服务端永远不关闭此链接 由客户端关闭
 
-8. 发送窗口和接受窗口：
+8. 发送窗口和接受窗口：[参考tcp的流控实现方式refer](https://coolshell.cn/articles/11609.html)
     消费者和生产者模型: 消费能力控制生产能力
+    TCP 需要有自我牺牲的精神, 当网络拥塞发生的时候主动让道, 具体的体现为RTT 时间变大
     
 9. 拥塞控制
     解决的问题: 雪崩式拥塞
@@ -89,7 +94,7 @@
 
 10. 重传
     1. 指数退避算法
-    2. 快速重传， 重复收到相同的ack的时候要通过 ack option 中找到当前ack 对应的已经收到的序列号 和未收到的序列号
+    2. 快速重传， 重复收到相同的ack的时候要通过 ack option 中找到当前ack 对应的已经收到的序列号 和未收到的序列号(sack)
     3. 超时时间设置:
         低通滤波器: 采样80% RTT + 最新的20% RTT = avg(RTT)
 11. win 
@@ -170,3 +175,6 @@ GRPC server 侧源码解读
     把单次请求的request 封装成为 setting frame, header frame 、data frame 
     在header frame 用对应的serv 处理请求， 等待data framer的到来，data frame是 blocked的进入recvbuffer 中，recvbuffer 再阻塞的get
     
+4. HTTP2 /HTTP1.X 
+    1. I/O 多路复用 同一个http 连接上可以 被不同的frame 复用
+    2. 二进制传输 使用数据frame
