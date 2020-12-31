@@ -242,7 +242,9 @@ redis:
      
 为什么那么快，并发又可以那么的高:
     1. redis 
-        redis 是基于事件模型驱动的程序, 事件分为
-        文件事件: 文件时间基于reactor模型和 epoll I/O 多路复用, 分别监听socket的accept && readable && writable 当事件得到满足就交由对应的处理器
+        redis 是基于事件模型驱动的程序使用单reactor单进程高性能架构(为什么是单进程？因为业务处理的速度非常快), 事件分为
+        文件事件: 文件时间基于reactor模型和 epoll I/O 多路复用, 
+        分别监听socket的accept && readable && writable 当事件得到满足就交由对应的处理器,每个对应的处理器里面处理的时间都是安装FIFO的方式处理
         时间事件: 周期性任务,aof,rdb, 
+    2.   
   
