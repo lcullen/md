@@ -121,7 +121,10 @@ M = 真实的程序线程数
     * 公平性:  每个超过运行10ms 都会被标记为可抢占的 sysymon 后台协程可以直接强制使超过20ms的G被移除 (goroutine中自带了runtimetimer计时器 time.sleep 用的就是这个)
     
 II go channel 底层实现 or 数据结构 [refer](https://codeburst.io/diving-deep-into-the-golang-channels-549fd4ed21a8)
+[用cond实现一个channel](https://time.geekbang.org/column/article/96994)
     channel 为的是解决 并发过程中 竞态资源的问题, 用communication 来代替share data
+    其实channel 是屏蔽了lock 的细节: 锁的粒度和锁的时间问题, 把锁的控制都放在了channel 中了
+    如何用sync.Cond 实现一个channel ? 
     核心结构
     1. sendq 和 rcvq
 
