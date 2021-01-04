@@ -11,6 +11,16 @@ LOG
     保证ACID 的D(持久化)
     innodb_flush_log_at_trx_commit 0:每隔1秒master thread flush redo 到磁盘​1:立刻将redo log flush 到磁盘
 2:redo log 仅在 内存中不刷入磁盘​造成相关mysql的抖动问题​
+    具体问题的分析: 
+        insert: 影响范围: 
+            innodb B+ tree 的数据页分离:
+                如果要产生页的分裂 是一组悲观插入，否则乐观插入
+        delete: 
+    如果崩溃真的发生了怎么恢复: 
+        1. 确定起始位置: 寻找checkpoint
+        2. 确定结束为止: 找到一个没有被写满的block
+3. undo log :
+    最重要的是roll-point 的指向是
 可配置文件大小
     + c checkpoint 更新位置
     + w writepos 日志位置
@@ -256,3 +266,24 @@ SERILIZE
 
 MyISAM:
     如何理解MyISAM的索引组织形式       
+
+interview qa:
+1. 主从同步问题:
+
+2. 索引
+
+3. 事务的实现
+
+4. 锁
+
+5. 自增id的设计思路: 
+    
+
+6. 两阶段提交
+
+7. redo log
+    1. redolog 是innodb 崩溃恢复的时候， 刷新脏页的重做日志记录
+    2. 设计成顺序写入的模式
+8. undo log
+
+9. view  
