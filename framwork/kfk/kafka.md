@@ -27,13 +27,21 @@
         分布式中的心跳 vs kafka 心跳
             kafka
             1. broker 充当consumer cluster 的 coordinator; 其他的broker watch zookeeper/ctrl -> broker_id 的失效 
-                ctrl/broker_id 失效的时候 会不会触发惊群效应 ? 如何解决 ? [todo]()
+                ctrl/broker_id 失效的时候 会不会触发惊群效应 ? 如何解决 ? [todo]
+                    顺序监听 形成一个监听链路表, 当前链路中的
             2. 
         如果一个consumer 不在向 broker 发送心跳信息，协调器会发生重均衡
     
     线程安全: 
         不同的集群互不影响; 每一个partition 都只有一个集群的 唯一一个消费者 可以消费, 不同集群之间的消费者互相不影响
-    
+        
+    当前消费者组的状态机:
+         preparerebalance /completebalance / empty / stable
+         消费者提交问题消息体: group_topic_partition => offset_expire_at 
+         rebalance的场景:
+         成员: join_req: 请求加入当前的group,上报自己要消费的topic 以及自己的offset (老成员需要上报)
+         coordinator:  sync_res: 重新奉陪当前对于topic 的分区安排
+         
     
 5: 如何解决实时性的要求:
     kafka stream read-process-write

@@ -149,12 +149,20 @@
    以上本质上是监听所有的句柄
 
 2. select/poll -> epoll 过渡的原因: fd的限制
+      select: 
+        1. 程序要轮询当前的fd数组看事件是否满足
+        2. 处理完满足事件的fd 要重新reset 自己感兴趣的事件类型
+      poll: 
+        1. 还是要轮询 但是拥有了自动扩容的机制
+        2. 标记自己感兴趣的事件类型
+      epoll:
+      
       epoll 为什么 fd 的增长 对其效率没有影响？ 
         epoll_wait 在不同 triggered 返回值:
             level triggered 条件触发: 每次wait 都会 通知 没有处理的 event
         edge triggered 边缘触发
       
-      拆解epoll:
+      拆解epoll: 核心组件,在内核注册对fd的事件,事件发生内核通过回调函数找到对应的epoll实例,并查看当前用户所关心的事件, 并加入到用户空间的事件完成的queue队列中, 并唤醒用户进程
             epoll 中有一个 红黑树,每个节点是 epitem,
         + 如果当当前的需要被监听的fd 通过epoll_ctl 加入到 epoll 的 红黑树中
         + 成为一个epitem节点,并会产生一个 epoll_entry，
