@@ -1,6 +1,13 @@
 相关问题:
     TCP提供了一种字节流服务，而收发双方都不保持记录的边界，应用程序应该如何提供他们自己的记录标识呢？ 业务系统如何知道 消息已经结束
 
+TLS/SSL 历史原因 各自的别名
+1. client -> server: say hello 表明自己的版本 && list 自己支持的加密套件列表 && 一个随机数
+2. service -> client: hello back; server 提供自己的证书信息 && 自己的一个随机数 
+3. client -> server: hand finish: 验证server 证书 && 用server证书加密 第二个随机数
+4. server -> client: hand finish : ok  接下来用三个随机数组成的 salt 使用对称加密来通信
+
+nginx 这里有一个session key 的机制 可以保存一天内的 上面的 过程 减少 重新连接的 消耗 
 
 1. ICMP
     查询报文类型:
@@ -183,7 +190,29 @@ GRPC server 侧源码解读
     把单次请求的request 封装成为 setting frame, header frame 、data frame 
     在header frame 用对应的serv 处理请求， 等待data framer的到来，data frame是 blocked的进入recvbuffer 中，recvbuffer 再阻塞的get
     
-4. HTTP2 /HTTP1.X 
-    1. I/O 多路复用 同一个http 连接上可以 被不同的frame 复用
-    2. 二进制传输 使用数据frame
-    
+
+
+5. RPC: 应用层协议
+    1. RPC和普通的HTTP的区别:
+        * RPC 如果使用HTTP 协议的话是没有 区别的，只不过包装了一层HTTP, 实现类似于跨进程通信的方法
+        * RPC 如果使用socket 通信 那么要解决 HTTP
+    2. RPC的设计模型 [refer](http://www.cs.cmu.edu/~dga/15-712/F07/papers/birrell842.pdf) 
+        user-interface -> stub -> rpcruntime 
+        stub: 正反序列化协议 
+            * soap: xml 可以使用idl 生成对应的stub 将二进制的值 按照描述符文档 序列化和反序列化 
+            * 在这里的实现可以是自定义的 可以用 restful 也可以用 soap
+            * 可以自定义压缩，和二进制传输的方式 ：对于 GRPC 来讲，二进制序列化协议是 Protocol Buffers。首先，需要定义一个协议文件.proto。
+                protobuf:
+                    + 一种二进制的协议,提供极高的压缩比: TLV（Tag，Length，Value）的存储办法。 对每一个字段使用标号的形式
+        rpcruntime: 处理发送请求 / 接受请求 
+    3. GRPC 和 HTTP2 结合的传输优势:
+        HTTP2 
+        * __I/O 多路复用__: 
+            * HTTP2 将一个 tcp 连接 划分为多个 stream, 每个stream 拥有自己的优先级，而且可以是双工的
+            * 将多个数据重新拆解分成更加小的帧，在接受端重新根据stream id 组装， 不同的streamid 还可以设置优先级
+        * 所有的数据头使用索引表 映射，每次传输 只传key 
+        缺点: 
+            * 因为还是基于TCP 传输 所以还是会有对头阻塞的问题(stream 2 先到达，但是stream1 丢失，TCP的重传机制使得 stream2 阻塞)
+        QUIC[refer](https://time.geekbang.org/column/article/9410):
+            相关的资料: [refer](https://www.infoq.cn/article/2018/03/weibo-quic)
+            * 使用UDP 取代tcp: 使用随机的
