@@ -269,21 +269,31 @@ MyISAM:
 
 interview qa:
 1. 主从同步问题:
-
 2. 索引
-
 3. 事务的实现
-
 4. 锁
-
 5. 自增id的设计思路: 
-    
-
-6. 两阶段提交
-
-7. redo log
-    1. redolog 是innodb 崩溃恢复的时候， 刷新脏页的重做日志记录
-    2. 设计成顺序写入的模式
-8. undo log
-
+6.两阶段提交
 9. view  
+
+
+10. buffer pool 的重要性:
+    * 为了减缓磁盘的性能问题，使用内存做的缓存
+    * flush 链表 && free 链表 
+    * lru 的优化
+    redo log
+    针对 buffer-pool 对页的改变可能没有及时刷新到磁盘就崩溃所以要用到顺序写的redolog
+        redolog buffer (内存中的缓存) : 都是以一个mrt 每个trx 组织起来的
+            1. redolog 是innodb 崩溃恢复的时候， 刷新脏页的重做日志记录
+            2. 设计成顺序写入的模式
+            
+        redolog 文件组 (磁盘中的文件)
+    分析一下三者之间的关系和如何协调的：
+        redolog-buffer  refodlog-file bufferpoll-flushchain
+        使用log-sequence-num 进行关联
+        + 所有的修改增量信息 都会被写入 redolog-buffer 中 && 所有被修改的脏页也会被修改放入 buffer-pool中的 flush 链表
+        + redolog-buffer 中的所有 trx mr 模块都有自己的lsn，这些lsn 也会被写到flush 链中的block 模块，同时 redolog-file
+            也会有lsn，并且通过对比flush chain中 队尾的lsn(oldest modify time) 确定自己的checkpoint
+             
+undolog:
+    1. trxid的生成逻辑: 每次达到一个step 的时候刷入磁盘，下次启动的时候 加上一个step 恢复
