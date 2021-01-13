@@ -138,3 +138,37 @@ II go channel 底层实现 or 数据结构 [refer](https://codeburst.io/diving-d
 
 II. go pprof 
     1. 
+
+基础:
+1. 接口
+    1. 空接口(eface) 和其他接口(iface)
+        * 空接口 里面会有 2个变量分别用来表示 当前的类型 和当前的类型数据
+        * 有方法的 接口
+2. 传参:
+    值类型     复制的是值类型
+    引用类型的 复制的是指针
+
+3. chan
+    1. chan 的三种操作 && 3中状态
+        1. 读、写、close
+        2. closed、active、nil
+        
+    2. chan 的个人理解
+         * 无buffer 能够当做同步使用, 有buffer 可以当做异步
+         * 并发场景的使用chan 实际上也是用了 hchan 中对recvq 和senq read write 做锁操作的，
+            把锁的内部细微实现进行了包装 而不用交由用户去处理lock 和 unlock的方式 
+            
+3. timer 各种设计的区别 和选型问题  [golang timer](http://xiaorui.cc/archives/6483)
+    1. timer 和当前的协程 挂钩匹配
+
+4. slice 的了解程度:
+    是对数组的封装,指向了底层的数组, 并保持了当前的 容量和大小    
+5. copy: 深度拷贝互不影响
+6. map && sync.Map 
+    * map 哪些类型能作为key， 可比较的类型都能作为key
+        底层的hash 冲突怎么解决的: 
+        扩容: copy on write
+    * syc.map 使用readyonly 和 dirty read 来提高map并发能力, 所有的读先落到 read 中， 如果没有找到则只能加锁读取dirty段
+        当miss 的数量达到一定的程度， 说明总是dirty 读取， 需要提升dirty 段到read 中 防止过度的miss 
+7. log pkg: 自带的log.output 是线性安全的
+8. http pkg: 路由的实现
