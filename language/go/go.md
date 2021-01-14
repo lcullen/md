@@ -149,6 +149,8 @@ II. go pprof
         * map val 是空结构体 当做set 使用 map[key]struct{}
         * 都是同一个内存地址 var s struct{}  var b struct{}  &b == &a
         
+    3. interface 的比较
+        只有当动态值类型一样 && 动态值一样  
 2. 传参:
     值类型     复制的是值类型
     引用类型的 复制的是指针
@@ -177,3 +179,10 @@ II. go pprof
         当miss 的数量达到一定的程度， 说明总是dirty 读取， 需要提升dirty 段到read 中 防止过度的miss 
 7. log pkg: 自带的log.output 是线性安全的
 8. http pkg: 路由的实现
+
+9. heap  && stack  && 队列的 内部实现
+    1. 在container pkg 中有 heap 的实现
+         
+    2. 
+
+10 . go build 和 go install 分别发生了什么
