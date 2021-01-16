@@ -186,3 +186,7 @@ II. go pprof
     2. 
 
 10 . go build 和 go install 分别发生了什么
+
+11. pprof 的性能调优: [refer](https://www.bilibili.com/video/BV1iA411i7Nt?from=search&seid=10157390214658424535)
+    * go tool 
+    

@@ -69,4 +69,5 @@ I. 限流策略和设计:大量的请求导致系统过载
     3. health:
     4. slb: 带权优先级队列
     以上这些都是依赖于采样打点分析 也是可以参考tcp 的流控去实现的 [refer](https://coolshell.cn/articles/11609.html)
+II. 调用链 和 golang 中的pprof 的设计思路和差异
         

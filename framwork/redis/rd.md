@@ -228,8 +228,9 @@ redis:
         * 分布式锁 面临的问题 和解决方案: [refer](https://dbaplus.cn/news-159-3080-1.html)
             + 原子操作 
             + TTL 和 expireTime
-                如果发生了GC 问题 或者其他网络延迟的问题， client 在set lock的时间都要大于 expiretime 导致 client 无法知道到底有没有锁成功
+                1. 如果发生了GC 问题 或者其他网络延迟的问题， client 在set lock的时间都要大于 expiretime 导致 client 无法知道到底有没有锁成功
                 解决方案是 加入定时器的机制 如果client 在expire的时间内无法返回报错 由客户自己处理，还有一种解决方案是 token， 从redis 那版本号， 低于这个版本号的就无法set， basic 算法吧这个是
+            + 当前执行时间
         * 数据分片怎么做的:
     sentinel:
         拓扑结构 和一主多从的区别
