@@ -68,6 +68,30 @@ I. 限流策略和设计:大量的请求导致系统过载
     2. 熔断: 在滑动窗口内最大的失败阈值是多少
     3. health:
     4. slb: 带权优先级队列
+    5: tracing:
+        1. 低消耗
+        2. 0侵入
+        *  
     以上这些都是依赖于采样打点分析 也是可以参考tcp 的流控去实现的 [refer](https://coolshell.cn/articles/11609.html)
 II. 调用链 和 golang 中的pprof 的设计思路和差异
-        
+
+III open tracing(分布式追踪)
+    open tracing 协议: 
+
+
+banyu micro Logic
+1. 服务分组
+2. 服务治理：
+    1. 资源: 
+        1. 连接数的监控
+        2. 
+    2. 运行状态:
+        1. qps
+        /*
+        业务监控
+           + 整体服务 SLA
+           + 业务自定义一些指标
+        */
+    3. sla:  
+        是怎么做的
+

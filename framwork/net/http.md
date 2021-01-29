@@ -216,3 +216,8 @@ GRPC server 侧源码解读
         QUIC[refer](https://time.geekbang.org/column/article/9410):
             相关的资料: [refer](https://www.infoq.cn/article/2018/03/weibo-quic)
             * 使用UDP 取代tcp: 使用随机的
+   4. thrift vs grpc 
+       thrift 
+        优势:
+        劣势:
+       

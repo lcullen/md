@@ -255,5 +255,8 @@ hash 的内部实现原理: 如何设计一个工业级别的hash table
     2. 对于开放寻址法: 删除怎么做
     3. 并发安全的hash table 怎么实现
 
-红黑树
-    1. 
+  
+ [free_lock的设计](https://coolshell.cn/articles/8239.html) https://coolshell.cn/articles/21164.html
+watch: 是事务当中的乐观锁
+    
+    

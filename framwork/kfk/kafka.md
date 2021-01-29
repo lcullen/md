@@ -171,7 +171,7 @@ I. 如何做到高吞吐
     1. broker:(存储的方式 && I/O):
         I/O 对应的调度算法:
             a.FIFO / CF
-        a. 顺序写入: 替代随机写入，减少了寻址的时间 __磁盘顺序写的性能会颠覆三观,甚至比内存的随机写入性能都要高__ [LSM&&SSTable](https://juejin.cn/post/6844903863758094343) __每次大规模的搜索会使用bloomfilter处理__ 包括LSM 查找是否存在的key, []
+        a. 顺序写入: 替代随机写入，减少了寻址的时间 __磁盘顺序写的性能会颠覆三观,甚至比内存的随机写入性能都要高__ [LSM&&SSTable](https://juejin.cn/post/6844903863758094343) __每次大规模的搜索会使用bloomfilter处理__ 包括LSM 查找是否存在的key, __以增量的方式代替 修改磁盘数据__
             选址方式(kafak索引的组织方式): 每一个文件夹下都会有三种文件格式的数据 *.log *.timestamp *.index
                 * offset: 每一个*.index 文件都是以 relative offset 作为文件名 进行二分搜索找到对应的*.index file 锁定到真正的物理offset
                 * timestamp: 和二级索引类似 timestamp => offset， offset=> address

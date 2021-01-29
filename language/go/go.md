@@ -187,6 +187,11 @@ II. go pprof
 
 10 . go build 和 go install 分别发生了什么
 
-11. pprof 的性能调优: [refer](https://www.bilibili.com/video/BV1iA411i7Nt?from=search&seid=10157390214658424535)
-    * go tool 
-    
+11. pprof的 __性能调优__: [refer](https://www.bilibili.com/video/BV1iA411i7Nt?from=search&seid=10157390214658424535)
+    * go tool
+    * go test -bench=. -benchtime=3s -run=none
+    *  [pprof和benchmark的结合](https://my.oschina.net/solate/blog/3034188)
+
+12. go rune 类型是什么 具备int32 的所有能力, 但是又是一种能够支持字符串的类型
+    * 
+13. 

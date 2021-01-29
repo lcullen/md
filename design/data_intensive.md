@@ -182,5 +182,7 @@ data intensive design
         如何保证强一致性: 共识算法
         代价: CAP 在P的情况下要满足C, 那么只能牺牲A
 
-7 tx 事务
+7  tx事务
     1. 隔离级别mysql的隔离级别实现方式
+
+8. 分布式
