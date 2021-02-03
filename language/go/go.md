@@ -63,7 +63,15 @@ CSP
         
 goroutine 暴涨:
     内存吃紧，GC, __Golang调度器__ 负担 
-
+进程 线程 协程
+1. 进程是资源的隔离单位
+    演化进度:
+        * 出现了 epoll 和 poll select io 多路复用的模型
+            但是没有解决 数据拷贝(内核态和用户态的拷贝)和 上下文切换的成本问题, 只是减少了线程数
+2. 线程是进程里面的多任务执行体, 线程间的调度也是在内核空间发生的
+    * 空间成本
+    * 时间成本
+3. 
 实战应用[refer](https://mp.weixin.qq.com/s/CGLWKawX7qTaMqIMWqmptA)
 
 
