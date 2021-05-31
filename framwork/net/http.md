@@ -134,6 +134,13 @@ nginx 这里有一个session key 的机制 可以保存一天内的 上面的 �
 16. TCP的可靠性
     只是针对TCP层的可靠， 并不负责应用层的可靠性
     reset by peer && broken pipe  一个是tcp 错， 一个是管道错, 一个rst 一个是signal
+
+17. already in use[refer](https://juejin.cn/book/6844733788681928712/section/6844733788832940039)
+原因:  
+    1. 服务端主动关闭连接 产生大量的 time_wait * 2 = 大约1min 套接字
+    2. 操作系统禁止新的套接字对端口的监听 (程序报错 already in use)
+    
+    
 3. 信息安全
     + DNS 劫持
         传统的DNS 解析过程 client -> local_hosp_map -> 运营商local_dns (不具备权威) -> 13台DNS server 进行递归解析直到找到自己负责的对应域名，如果找不到 最后由顶级root dns 负责指派 能处理这个dns 解析的server 
