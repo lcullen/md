@@ -202,11 +202,10 @@ II. go pprof
 
 12. go rune 类型是什么 具备int32 的所有能力, 但是又是一种能够支持字符串的类型
     * 
-13. 
-=======
- 
 
 4. 对于新的go泛型的理解
     * 什么是go泛型
     * 为什么需要go泛型
     * demo
+    
+13. 实际场景使用chan [refer](https://segmentfault.com/a/1190000017958702) [qiyingyiji](https://lessisbetter.site/2019/06/09/golang-first-class-function/#%E7%89%88%E6%9C%AC3)

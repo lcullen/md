@@ -155,6 +155,11 @@ nginx 这里有一个session key 的机制 可以保存一天内的 上面的 �
     + 存储
         进行端到端的加密，端利用对方的 公钥对消息进行加密，接收放通过自己的私钥进行解密，中间的存储层存储的也是加密之后的信息
 
+
+17. Address already in use 现实生产中遇到的问题:
+    Socket 选项
+        SO_REUSEADDR
+        
 //-=-=--=-
 1. select: 程序疯狂 span 用select 扫描所有的 fd，等fd 满足条件后，处理并且 fd_set fd，等待应用程序span 被处理的 fd
     event

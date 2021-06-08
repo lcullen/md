@@ -186,3 +186,7 @@ data intensive design
     1. 隔离级别mysql的隔离级别实现方式
 
 8. 分布式
+
+9. cas 也能够解决 ABA 问题:
+    
+    

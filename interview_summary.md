@@ -117,8 +117,11 @@ or 跨数据中心的数据一致性问题:
     * 监控异常业务数据 
     * 
 
+[灵感](https://tech.meituan.com/2016/11/18/disruptor.html)
 [超强无锁队列的实现](https://zhuanlan.zhihu.com/p/24432607)
-无锁队列Golang的实现: (中心思想 自己锁自己 原子操作) 暂时不会做 [refer](https://coolshell.cn/articles/8239.html)
+[refer](https://coolshell.cn/articles/8239.html) 
+两种方法的实现是一致的
+无锁队列Golang的实现: (中心思想 自己锁自己 原子操作) 
 ```go
     package freelockqueue
     import (
@@ -131,64 +134,36 @@ or 跨数据中心的数据一致性问题:
     }
     type Queuex struct {
         head, tail *Block
-        lenght int32
     } 
     
-    type LockFree interface {
+    type LockFreeQueue interface {
         Enqueue(interface{}) bool
         Dequeue() interface{}
     }
     
-    func (q *Queuex)Enqueue(data interface{}) bool {
+    func (q *Queuex) Enqueue(data interface{}) {
         b := &Block{p: unsafe.Pointer(&data)}
-        p := q.tail.next
         for {
-        	for p.next != nil {
-        		p = p.next
+            t := q.tail
+            next := t.next
+        	if q.tail != t { //无法参加竞争
+        		continue
         	}
-        	if ok := atomic.CompareAndSwapPointer(&q.tail.p, nil, b.p); ok {
+        	if next != nil  { //在这边已经竞争到了tail 了， 但是tail.next 又开始变化了 把tail 直接指向最远的地方
+        	  atomic.CompareAndSwapPointer(&q.tail.p, t, next) 
+        	  continue
+        	}
+            //这里就直接竞争到最远的地方了
+        	if atomic.CompareAndSwapPointer(&next.next.p, nil, b) {
         		break
         	}
         }
-        atomic.CompareAndSwapPointer(&q.tail.p, nil, b.p) 
+        //其他 协程or 线程还在前面的 for 循环 使劲的绕 下面的语句 直接可执行，不用锁住了
+        atomic.CompareAndSwapPointer(&q.tail.p, q.tail.p, b) 
     }
 
 ```
 
-II 自我认知 和企业文化的认知 
-    * 优点: 
-            + 对自己负责的事情 负责到底 owner 意识 [数据产出 && 程序代码设计和实施], 
-            + 团队协作, 自驱力: 对系统健康度的调优 
-            + 不满足于现状
-            + 追求完整性和细节
-    * 缺点:
-            + 喜欢追求细节导致项目／作业未能按期完成。通过时间管理能力改变工作方式，先完成框架再改善细节得以解决
-                可能会浪费一些时间。针对这一不足，我会经常对比一下我的工作现状和职业目标，确保自己没有把太多时间花费在某一个项目或不必要的工作上
-            + 不知如何拒绝，同事要求帮忙一概揽下，影响自身工作进度。
-                通过多任务处理能力设定优先顺序，以该优先顺序表向求助同事展示自己手上工作，并给其一个自己在何时可以给予帮助的时间估计，让求助人自行决定是否求助，问题解决
-
-III. 
-    对自我做过业务的认知:
-    当前系统的不足是什么? 
-    1. 数据 
-        * 数据监控的不是很敏感,自己也通过很多的手段, 比如使用系统打点日志来分析当前订单的数据，每日分析前一天的成交数量
-            比较好的方式是使用stream 流实时分析 数据
-    2. 高可用性
-        对于可用性的粒度不是很细化
-    3. 数据的一致性
-
-* 你对小红书的认识:
-    关键字: 2013.06 2.2亿 90%女性用户 80% 都是90后
-    1. 自从找工作的时候就开始关注小红书, 慢慢的使用小红书, 也查找了一些资料去认识小红书, 小红书从之前的 美妆个护 起家, 
-        后来跟随短视频的爆发 加入了短视频赛道 
-    2. 如果谈到争议的部分如何解答:
-        发展速度的过快
-    3. 搜索在当中起到的作用
-        搜索可以说是整个流量的入口, 主导用户能够看到的内容
-    4. 培养用户的习惯
-
-* 对我来说就是一个海洋 
-    对小红书的提问: 
-        * 
-        * 
-        *
+如何压榨单机 也就是 要考虑单机情况下 或者单服务情况下最高的性能
+1. 假如把当前的业务系统 qps 提高 x100 会出现什么问题 如何应对?
+    1. 

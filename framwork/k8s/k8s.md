@@ -149,3 +149,11 @@ volume:
 ========
 DaemonSet
 1. 
+
+
+-=-=-=-=-=-=-=-
+
+
+pod:
+1. 共享 cgroup, namespace, 的单位
+ 
