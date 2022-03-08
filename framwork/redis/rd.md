@@ -259,4 +259,26 @@ hash 的内部实现原理: 如何设计一个工业级别的hash table
  [free_lock的设计](https://coolshell.cn/articles/8239.html) https://coolshell.cn/articles/21164.html
 watch: 是事务当中的乐观锁
     
-    
+Geek [rd](file:///Users/luoxiaowei/Downloads/146-Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98/01%E4%B8%A8%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8C%85%E5%90%AB%E4%BB%80%E4%B9%88%EF%BC%9F.html) 
+
+* 两大维度
+  * 应用
+    * 
+  * 系统设计
+* 三高
+  * 高性能: 抖动，阻塞，bigkey
+    * 单机线程 数据结构
+  * 高可用
+    * 副本
+      * 主从: 数据一致性，丢失，
+        * aof 
+        * rdb
+      * 哨兵
+  * 高拓展: 雪崩，穿透，污染
+    * 数据分片: 数据倾斜，秒杀，
+    * 负载均衡
+
+=====在B站看到的一个🤔==
+为了使 外存和内存更加的相近
+* 数据结构保持一致
+* 外存load 到内存的时候 转换
