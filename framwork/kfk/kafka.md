@@ -224,6 +224,13 @@ IV. 特殊应用 延时队列的设计：
         等delay queue 中的任务条件得到满足的时候 再发送给用户topic
     2. delay queue 的设计思路
     3. 结合laraval 中的延迟队列设计思路是怎么做的, 需要添加一些细节点
-   
-
  
+
+===
+1. producer:
+   1. batch send: if fail
+   2. speed up ? 
+   3. 吞吐:
+   4. 插件流程: 
+   5. 线程数量: 
+2. 

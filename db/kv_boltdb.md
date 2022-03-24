@@ -11,4 +11,4 @@ refactor reactor 结构？
 举例boltdb 纯内存KV
 
 持久化的方案让这些不单单是纯内存的KV
-1. 
+1. 如果 

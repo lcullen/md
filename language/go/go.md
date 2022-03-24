@@ -213,3 +213,17 @@ II. go pprof
 
 如何理解unsafe.point
 [refer](https://www.cnblogs.com/qcrao-2018/p/10964692.html)
+
+
+
+内存模型 memory model [refer](https://go.dev/ref/mem)
+happens before : 读写成为一对，写在前，读在后，并且中间没有任何的写操作
+1. 
+   1. 编译器会导致内存变量的重排
+   2. 读写不能保证一致性 需要 加上同步元语
+2. 天然 happens before
+   1. channel
+   2. lock
+
+go tools:
+1. 
