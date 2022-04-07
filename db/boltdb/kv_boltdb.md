@@ -11,9 +11,13 @@ refactor reactor 结构？
 举例boltdb 纯内存KV
 
 持久化的方案让这些不单单是纯内存的KV
+<<<<<<< HEAD:db/kv_boltdb.md
 1. 如果 
 
 
 
 ======
 1. 
+=======
+1.  
+>>>>>>> cf14f21 (add boltdb demo):db/boltdb/kv_boltdb.md
