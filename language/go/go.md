@@ -162,8 +162,10 @@ II. go pprof
 2. 传参:
     值类型     复制的是值类型
     引用类型的 复制的是指针
+3. equal 相等 判断相等 判等
+   1. 
 
-3. chan
+4. chan
     1. chan 的三种操作 && 3中状态
         1. 读、写、close
         2. closed、active、nil
@@ -173,25 +175,25 @@ II. go pprof
          * 并发场景的使用chan 实际上也是用了 hchan 中对recvq 和senq read write 做锁操作的，
             把锁的内部细微实现进行了包装 而不用交由用户去处理lock 和 unlock的方式 
             
-3. timer 各种设计的区别 和选型问题  [golang timer](http://xiaorui.cc/archives/6483)
+5. timer 各种设计的区别 和选型问题  [golang timer](http://xiaorui.cc/archives/6483)
     1. timer 和当前的协程 挂钩匹配
 
-4. slice 的了解程度:
+6. slice 的了解程度:
     是对数组的封装,指向了底层的数组, 并保持了当前的 容量和大小    
-5. copy: 深度拷贝互不影响
-6. map && sync.Map 
+7. copy: 深度拷贝互不影响
+8. map && sync.Map 
     * map 哪些类型能作为key， 可比较的类型都能作为key
         底层的hash 冲突怎么解决的: 
         扩容: copy on write
     * syc.map 使用readyonly 和 dirty read 来提高map并发能力, 所有的读先落到 read 中， 如果没有找到则只能加锁读取dirty段
         当miss 的数量达到一定的程度， 说明总是dirty 读取， 需要提升dirty 段到read 中 防止过度的miss 
-7. log pkg: 自带的log.output 是线性安全的
-8. http pkg: 路由的实现
+9. log pkg: 自带的log.output 是线性安全的
+10. http pkg: 路由的实现
 
-9. heap  && stack  && 队列的 内部实现
-    1. 在container pkg 中有 heap 的实现
+11. heap  && stack  && 队列的 内部实现
+     1. 在container pkg 中有 heap 的实现
          
-    2. 
+     2. 
 
 10 . go build 和 go install 分别发生了什么
 
