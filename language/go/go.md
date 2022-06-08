@@ -240,3 +240,97 @@ go tools:
    2. 栈上的指针不能指向已经被回收的栈内存
 2. goroutine 的分配发生在栈上，默认4k，可以自动扩缩
 3. 
+
+---曹春辉--
+1. GMP 调度组件&&调度计算
+    * 程序的局部性: runnext 去解掉
+    * 生产者和消费者模型
+        生产
+            * 优先级 runnext(指针)-> local(数组) -> global(链表)
+            * 新生成的goroutine 优先级大于 老的，优先塞入 runnext，如果有值，剔除老的，将老的放入local，localarr 如果已经满256，剔除一半 生成batch 放入global
+            * runnext 是为了解决程序的局部性，可以往cpu core 缓存扩散的方向去考虑
+        消费(四大法宝)
+            * schedule
+            * runtime.execute
+            * runtime.gogo
+            * runtime.goexit
+            --
+            首先从runnext获取 -> local 随机%取一个
+        消费的时候遇到阻塞问题怎么解:
+            * chan,read,select,sleep,lock
+            
+2. 编译
+    refer: golang.design/gossa 查看编译过程 https://golang.design/gossa?id=1d5bd23e-caa6-11ec-adb4-0242ac16000d
+    或者godbolt.org
+    go tool compile -S ./helle.go | grep "hello.go:5" //stringstoslicebyte
+    https://github.com/x-motemen/gore
+    参数调用规约: https://github.com/acodercat/function-call-principle
+    
+    goyacc grammer.y 语法树相关
+ 
+ 3. 常用数据结构
+    * channel
+        * 数据copy 是怎么操作的  
+        * 并发安全
+            * chansend,chanrecv 都成对的加锁
+        * gopark goready
+        
+    * timer 四叉堆 老版本:
+        -> 分片锁 多个四叉堆
+ 4. system call
+    * 复习 函数调用规约
+    
+ 5. 作业:
+    * tryLock with retry timeout
+    * dead lock
+    * 时间轮，timer cpu high
+    * https://books.studygolang.com/gopl-zh/ 互斥锁
+ 
+ 6. 内存分配与垃圾回收
+    路线: 
+        * 内存从哪里来
+        * 垃圾从哪里去
+    GC
+        * 标记对象怎么来的
+            worker buffer 往p.gcwoker 里面推送
+            mutator 写屏障中推送当前对象
+        * 标记对象到哪里去
+    栈分配和堆分配 有什么区别，为什么要区分，或者逻辑化这种
+        * 栈分配是 轻量级的操作，只移动栈针，和赋值，最后返回的时候直接释放
+        * 堆分配: -gcflags="m"
+            * 逃逸分析: 所有的场景分析 -> http://github.com/golang/go/tree/master/test  escape_xx.go
+    内存分配
+        * 顺序分配
+        * 链式分配: 如何对内存切块 (分级分配方式)
+            一下是内存碎片的产生和优化
+            first-fit
+            next-fit
+            best-fit            
+    Go 内存分配 使用分级分配 && mmap的方式获取内存快
+        arena block 为64m 内存块
+            mcache 绑定p 中
+            mcenter 中心化 缓存
+            mheap arena 向操作系统 申请
+        分配方式:
+            tiny 多级缓存
+            small
+            large
+
+    垃圾回收:
+        * 语义垃圾: slice 缩容
+        * 语法垃圾:       
+            * 触发的方式: 用户主动，后台，每次内存的分配
+            * gcworder 去处理标记 问题, 推送到本地的        
+            __gopark__  __goready__ 需要确认
+            * cpu 低于25%
+            * 所接受的挑战:
+                * cpu 控制 
+                * 三色标记对象漏标:  (写屏障)
+                    * 强弱三色不变性 
+
+
+===框架层面需要理解的
+ * 皮裤套棉裤
+ * 路由怎么找=》 
+    * 字典树 trie
+    * radix tree
