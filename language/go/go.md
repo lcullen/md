@@ -127,14 +127,20 @@ M = 真实的程序线程数
     * 会遇到的问题: 饥饿
     * M 、G 的阻塞: M的系统阻塞 G的chan 阻塞
     * 公平性:  每个超过运行10ms 都会被标记为可抢占的 sysymon 后台协程可以直接强制使超过20ms的G被移除 (goroutine中自带了runtimetimer计时器 time.sleep 用的就是这个)
-    
+    *几个关键字调度过程中[refer](https://blog.csdn.net/u010853261/article/details/85887948):
+        * goready
+        * gopark
+        * gosche
+        * mcall
 II go channel 底层实现 or 数据结构 [refer](https://codeburst.io/diving-deep-into-the-golang-channels-549fd4ed21a8)
 [用cond实现一个channel](https://time.geekbang.org/column/article/96994)
     channel 为的是解决 并发过程中 竞态资源的问题, 用communication 来代替share data
     其实channel 是屏蔽了lock 的细节: 锁的粒度和锁的时间问题, 把锁的控制都放在了channel 中了
     如何用sync.Cond 实现一个channel ? 
     核心结构
-    1. sendq 和 rcvq
+    1. sendq and rcvq : channel 和 goroutine的调度关系
+    2. sendx and recvx: ring buffer 在chan 中的使用
+    3. 实际操作过程中panic的场景
 
 2. 无锁队列的实现 
    * sync.Waitgroup 的实现方式
