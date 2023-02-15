@@ -3,15 +3,12 @@ module github.com/lcullen/mardown
 go 1.12
 
 require (
-	git.apache.org/thrift.git v0.13.0
-	github.com/golang/protobuf v1.3.2
-	github.com/gomodule/redigo v2.0.0+incompatible
-	github.com/gorilla/mux v1.7.3
-	github.com/prometheus/client_golang v1.2.1
-	github.com/satori/go.uuid v1.2.0
-	golang.org/x/net v0.0.0-20191119073136-fc4aabc6c914
+	github.com/golang/protobuf v1.4.3
+	golang.org/x/net v0.0.0-20200625001655-4c5254603344
+	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40 // indirect
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/grpc v1.25.1
-	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+	google.golang.org/protobuf v1.26.0-rc.1 // indirect
+	gorm.io/driver/sqlite v1.4.4
+	gorm.io/gorm v1.24.5
 )
