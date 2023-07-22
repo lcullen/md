@@ -31,3 +31,7 @@ GRPC 一些小的知识点和技巧
     + GRPC-Web
     
 Go web [http](http://cizixs.com/2016/08/17/golang-http-server-side/) 
+
+
+1. 关于责任链路pattern:
+   * 

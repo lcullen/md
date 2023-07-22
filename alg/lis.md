@@ -114,6 +114,52 @@ func LISN2(s []int) int {
     }
     ```
 
+3. 寻找两个正序数组中位数
 
+```go
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 
+}
+//递归法
+func findKthNum(num1, num2 []int, k int) {
+	if len(num1) == 0 {
+		return num2[k-1]	
+	} else if len(num2) == 0 {
+		return num1[k-1]	
+	}
+	
+	if k == 1 {
+		return 	max(num1[0], num2[0])
+	}	
+	
+	km := k >> 2
+	if num1[km] < num2[km] {
+		num1 = num1[km:]	
+	} else {
+		num2 = num2[km:]	
+	}
+	return findKth(num1, num2, k-km)
+}
 
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+```
+137:
+只出现一次的数字
+给你一个整数数组 nums ，除某个元素仅出现 一次 外，其余每个元素都恰出现 三次 。请你找出并返回那个只出现了一次的元素。
+
+你必须设计并实现线性时间复杂度的算法且不使用额外空间来解决此问题。
+
+来源：力扣（LeetCode）
+链接：https://leetcode.cn/problems/single-number-ii
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+```go
+func singleNumber(nums []int) int {
+
+}
+```

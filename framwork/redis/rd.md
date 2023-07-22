@@ -282,3 +282,8 @@ Geek [rd](file:///Users/luoxiaowei/Downloads/146-Redis%E6%A0%B8%E5%BF%83%E6%8A%8
 为了使 外存和内存更加的相近
 * 数据结构保持一致
 * 外存load 到内存的时候 转换
+
+-------
+## 重修:
+
+

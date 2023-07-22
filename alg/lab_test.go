@@ -12,7 +12,7 @@ func Test_LongestNoDuplicateSubString(t *testing.T) {
 	t.Log(p)
 }
 
-//最长无重复子串: 采用滑动窗口的方式记录最大长度&&最大长度的起始地点
+// 最长无重复子串: 采用滑动窗口的方式记录最大长度&&最大长度的起始地点
 func longestNoDuplicateSubString(str string) (length, wndStartPos int) {
 	if len(str) <= 1 {
 		return len(str), len(str)
@@ -40,7 +40,8 @@ func Test_longestPalindrome(t *testing.T) {
 /*
 最长回文子串: dp[j][i] = true 表示 从j ~ i 是回文串 那么j+1 ~ i-1 也是回文串
 得到状态转移方程: i-j <= 1 表示对称或者i==j dp[j][i] = dp[j+1][i-1]
-				i-j > 1 && str[j] = str[i] dp
+
+	i-j > 1 && str[j] = str[i] dp
 */
 func longestPalindrome(s string) string {
 	if len(s) <= 1 {
@@ -69,7 +70,7 @@ func longestPalindrome(s string) string {
 	return longestStr
 }
 
-//todo test
+// todo test
 func restoreIpAddresses(s string) []string {
 	result := []string{}
 	if len(s) < 4 || len(s) > 12 {
@@ -104,7 +105,7 @@ func _restoreIpAddresses(s, ip string, pos, n int, result []string) {
 	}
 }
 
-//76. 最小覆盖子串
+// 76. 最小覆盖子串
 func minWindow(s string, t string) string {
 	tMap := make(map[int32]bool, len(t))
 	for _, v := range t {
@@ -117,7 +118,7 @@ func minWindow(s string, t string) string {
 	return ""
 }
 
-//10 正则表达式匹配问题
+// 10 正则表达式匹配问题
 func isMatch(s, p string) bool {
 	dp := make(map[int]map[int]bool, len(s))
 	dp[0] = map[int]bool{0: true}
@@ -150,7 +151,7 @@ func isMatch(s, p string) bool {
 	return dp[len(s)][len(p)]
 }
 
-//单词拆分 II [refer](https://blog.csdn.net/qq_17550379/article/details/85847803)
+// 单词拆分 II [refer](https://blog.csdn.net/qq_17550379/article/details/85847803)
 func Solution(s string, list []string) []string {
 	return []string{}
 }
