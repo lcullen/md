@@ -66,3 +66,32 @@ func findMode(root *TreeNode) (res []int) {
 	}
 	return
 }
+
+func largestValues(root *TreeNode) []int {
+
+	var preorder func(*TreeNode, int)
+
+	levelMap := map[int]int{}
+	preorder = func(node *TreeNode, level int) {
+		if node == nil {
+			return
+		}
+		if v, ok := levelMap[level]; !ok {
+			levelMap[level] = node.Val
+		} else if node.Val > v {
+			levelMap[level] = v
+		}
+
+		preorder(node.Left, level+1)
+
+		preorder(node.Right, level+1)
+	}
+
+	res := make([]int, len(levelMap))
+
+	for i := range res {
+		res[i] = levelMap[i]
+	}
+	return res
+
+}

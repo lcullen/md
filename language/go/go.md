@@ -150,7 +150,7 @@ II go channel 底层实现 or 数据结构 [refer](https://codeburst.io/diving-d
     runtime中全局维护 64bucket, 每个bucket 都是一个四岔最小堆, 堆顶是距离现在最近的时间
 
 
-II. go pprof 
+II. go pprof 最好结合 内存分配 和 goroutine 调度 相关的 数据结构 一起看
     1. 
 
 基础:
@@ -292,7 +292,7 @@ go tools:
     * 时间轮，timer cpu high
     * https://books.studygolang.com/gopl-zh/ 互斥锁
  
- 6. 内存分配与垃圾回收
+ 6. 内存分配与垃圾回收 (draveness)[https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-memory-allocator/]
     路线: 
         * 内存从哪里来
         * 垃圾从哪里去
@@ -333,6 +333,11 @@ go tools:
                 * cpu 控制 
                 * 三色标记对象漏标:  (写屏障)
                     * 强弱三色不变性 
+
+
+对于内存对象引用分析 利器: [go 内存泄漏，pprof 够用了么](https://uncledou.site/2022/go-memory-ref-flamegraph/)
+
+比较简约的 快速阅读路线 [Go专家编程](https://books.studygolang.com/GoExpertProgramming/chapter04/4.2-garbage_collection.html)
 
 
 ===框架层面需要理解的
