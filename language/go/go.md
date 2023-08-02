@@ -191,6 +191,9 @@ II. go pprof 最好结合 内存分配 和 goroutine 调度 相关的 数据结�
     * map 哪些类型能作为key， 可比较的类型都能作为key
         底层的hash 冲突怎么解决的: 
         扩容: copy on write
+        扩容的机制: 
+      * small: 
+      * large:
     * syc.map 使用readyonly 和 dirty read 来提高map并发能力, 所有的读先落到 read 中， 如果没有找到则只能加锁读取dirty段
         当miss 的数量达到一定的程度， 说明总是dirty 读取， 需要提升dirty 段到read 中 防止过度的miss 
 9. log pkg: 自带的log.output 是线性安全的
@@ -294,8 +297,15 @@ go tools:
  
  6. 内存分配与垃圾回收 (draveness)[https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-memory-allocator/]
     路线: 
+  [go 专家编程](http://books.studygolang.com/GoExpertProgramming/chapter04/4.1-memory_alloc.html)
         * 内存从哪里来
         * 垃圾从哪里去
+[刘冰丹的内存图片](https://www.yuque.com/aceld/golang/qzyivn#sDIE6)
+![img.png](img.png)
+mcache 内存的构成
+span:
+bitmap: 用于GC
+arena:
     GC
         * 标记对象怎么来的
             worker buffer 往p.gcwoker 里面推送
