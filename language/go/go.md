@@ -17,7 +17,8 @@ Context
    3. WithTimeout
    以上三种都会自动脱离father Ctx 并且关闭 doneCh 用的是深度优先策略
    4. WithValue
-
+你是如何理解 context 的作用 和必须存在的 意义?
+   
 ==============
 CSP
 //communicating sequential processes
@@ -110,14 +111,17 @@ go 中的sort
 2. defer 结构体也是一个通过linked的 结构，内置了 defer 需要调用的func
    defer 不是原子的 [refer](https://segmentfault.com/a/1190000006823652)
         先对return xxx 进行 xxx 的赋值 然后 再执行 defer 语句， 然后再真正的返回
+3. inline: [内联优化](https://tonybai.com/2022/10/17/understand-go-inlining-optimisations-by-example/)
+    * 高性能
+    * 开销: 如果开启内联，会直接把func 的实现 考进去合并，所以 func 实际是膨胀的
 
 =====go concurrency == 
 1. 并发的副作用
 2. 基本的同步原语
     1. mutex
     
-
-
+goroutine 的 goready and gopark 的条件
+G0 和 M0 的初始化过程
 I. go GMP 调度 [refer](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-goroutine/)
 goroutine 是较线程 更加轻量级(占用的上下文空间更加的小切换更加的容易)的用户态 协程, 添加goroutine 提高了程序的并发能力
 但是应用程序要进行对goroutine的调度和协调, 避免出现饿的饿死, 旱的旱死. [tony bai](https://tonybai.com/2020/03/21/illustrated-tales-of-go-runtime-scheduler/)
@@ -132,6 +136,13 @@ M = 真实的程序线程数
         * gopark
         * gosche
         * mcall
+
+关于系统级别的 goroutine
+    * main goroutine: main_goroutine:  
+        go func 关键字 掉用 newproc(): getg() 拿到当前工作栈的g(因为当前的参数都在这里), allp() 拿到p,try 从p 里拿idle的g,没有的话从heap
+        里面重新分配 goroutine 所需要的栈空间,init status 供调度使用 , put 当前的new g to runq
+    * g0 调度
+
 II go channel 底层实现 or 数据结构 [refer](https://codeburst.io/diving-deep-into-the-golang-channels-549fd4ed21a8)
 [用cond实现一个channel](https://time.geekbang.org/column/article/96994)
     channel 为的是解决 并发过程中 竞态资源的问题, 用communication 来代替share data
@@ -191,9 +202,11 @@ II. go pprof 最好结合 内存分配 和 goroutine 调度 相关的 数据结�
     * map 哪些类型能作为key， 可比较的类型都能作为key
         底层的hash 冲突怎么解决的: 
         扩容: copy on write
-        扩容的机制: 
-      * small: 
-      * large:
+        * small: 
+        * large:
+      * 过程: 渐进式扩容, 理解 高8位和低8位 [扩容过程](https://golang.design/go-questions/map/extend/)
+        * 翻倍扩容(overflow bucket太多): 2^(B+1): bucket -> x part + y part 分配方式为key_low_hash(b+1)位 分配新的bucket
+        * 等值扩容(bucket key 紧凑影响插入): 
     * syc.map 使用readyonly 和 dirty read 来提高map并发能力, 所有的读先落到 read 中， 如果没有找到则只能加锁读取dirty段
         当miss 的数量达到一定的程度， 说明总是dirty 读取， 需要提升dirty 段到read 中 防止过度的miss 
 9. log pkg: 自带的log.output 是线性安全的
@@ -240,6 +253,8 @@ go tools:
 1. race
 2. gcflags
 3. mock tools
+4. trace [go trace dig](https://tonybai.com/2020/03/21/illustrated-tales-of-go-runtime-scheduler/)
+   * p.trace buffer list 推送 goroutine 信息 
 
 
 ====
