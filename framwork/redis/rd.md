@@ -182,8 +182,8 @@ redis 中的 rehash 通过 ht[0].used  2^? 来scale ht[1] 所需要的大小
 4. loadfactor 合理设置
 
 =======常见问题
+[热点key的发现&&处理](https://www.alibabacloud.com/help/zh/redis/use-cases/discover-and-resolve-the-hotkey-issue)
 缓存一致性
-
 缓存穿透/击穿
 缓存雪崩
 热点数据集中失效
@@ -286,4 +286,27 @@ Geek [rd](file:///Users/luoxiaowei/Downloads/146-Redis%E6%A0%B8%E5%BF%83%E6%8A%8
 -------
 ## 重修:
 
+aof 实现机制:
+    1. 传统是 wal, but aof 是 append fsync 多态命令的执行成功校验, 才会写aof
+    2. 写的时机: 
+        * always fsync
+        * every second
+        * never
+    3. aof 重写 减小aof 内存日志的大小
 
+
+rdb:
+    fork 出bgsave 之后: 所有在做rdb期间的写操作 都会被并入到 replication buffer 里面
+
+
+[多副本的数据同步](file:///Users/yizhu/learn/146-Redis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98/06%E4%B8%A8%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%EF%BC%9A%E4%B8%BB%E4%BB%8E%E5%BA%93%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%EF%BC%9F.html):
+    1. 全量复制: 声明成为副本，主同步rdb 和对应的offset 给从slave
+         主-从-从 ![img.png](img.png)
+    2. 基于长连接的 命令复制模式
+        断连:
+            * repl_buffer_pool ring 结果, 和 kafka 的hw，leo 差不多，主库维护 slave 已经消费的 offset
+    3. 增量复制模式
+
+
+服务业务场景:
+    *
