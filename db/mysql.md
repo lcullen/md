@@ -47,7 +47,8 @@ change buffer 在索引中的使用
         Waiting for table metadata lock[故障](http://www.ywnds.com/?p=10091)总之，alter table的语句是很危险的（其实他的危险其实是未提交事物或者长事务导致的），在操作之前最好确认对要操作的表没有任何进行中的操作、没有未提交事务、也没有显式事务中的报错语句。如果有alter table的维护任务，在无人监管的时候运行，最好通过lock_wait_timeout设置好超时时间，避免长时间的metedata锁等待。​
 行锁 (innodb) 提高并发量
 
-2.  行锁
+2.  行锁 [事务和锁](https://www.cnblogs.com/chanshuyi/p/diff-trans-level-lock.html)
+![img.png](img.png)
     + Record Lock: 锁住的是唯一索引
     + 幻读:同样的sql执行两次结果不同
     + Gap LOCK 间隙锁 开区间, 不包括row 本身，避免多个事务对同一个范围多次插入出现幻读 
@@ -122,6 +123,8 @@ SERILIZE
         
         * 延迟同步时间: binlog_group_commit_sync_delay 等待一段时间后 一起提交
         * 延迟同步次数: binlog_group_commit_sync_no_delay_count 等待一组count 后 一起提交
+
+redo log 写入环形的 log buffer 内存中, checkpoint  
                  
 5. 主从
     主库A校验从库B的连接请求
@@ -297,3 +300,5 @@ interview qa:
              
 undolog:
     1. trxid的生成逻辑: 每次达到一个step 的时候刷入磁盘，下次启动的时候 加上一个step 恢复
+
+

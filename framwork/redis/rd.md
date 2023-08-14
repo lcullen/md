@@ -310,3 +310,24 @@ rdb:
 
 服务业务场景:
     *
+
+面试 常见:
+[最佳实践](https://rw5pitk8qjs.feishu.cn/wiki/J9Nrw0KLYiy2Tekxu4EcuTfqnHb?chunked=false): 
+
+dirty data: 一致性问题的处理方式: cache aside : 删除cache, 层新db
+击穿,穿刺: 冷热数据, write：hit cache-> update cache db or only update db
+高频写: write 只更新cache 异步更新db, read miss readdb, recall cache
+
+热key:
+    1. 降频: 
+        * 多副本处理
+        * 本地LRU 缓存
+        * 业务拆解
+    2. 止损
+        * 限流
+        * 手动禁止
+        * 兜底策略: key 相似度 备选
+大key
+
+    
+    

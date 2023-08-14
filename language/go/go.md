@@ -117,7 +117,7 @@ go 中的sort
 
 =====go concurrency == 
 1. 并发的副作用
-2. 基本的同步原语
+2. [基本的同步原语](https://blog.csdn.net/aa2533004938/article/details/121140427) [mutex的实现原理](https://medium.com/a-journey-with-go/go-how-to-reduce-lock-contention-with-the-atomic-package-ba3b2664b549)
     1. mutex
     
 goroutine 的 goready and gopark 的条件
